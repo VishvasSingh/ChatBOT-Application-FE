@@ -1,11 +1,9 @@
 <p-card header="Welcome to the Dashboard">
   <p>Here you can manage your projects and view recent activity.</p>
-  <button
-    pButton
-    type="button"
-    label="Create New Project"
-    class="home__button w-full mt-3">
-  </button>
+<ng-template pTemplate="footer">
+    <p-button label="Create New Project" (click)="createNewProject()">
+      </p-button>
+  </ng-template>
 
 </p-card>
 
