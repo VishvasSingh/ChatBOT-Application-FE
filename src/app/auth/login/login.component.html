@@ -1,10 +1,11 @@
+<p-toast></p-toast>
 <div class="login__container">
   <div class="login__blur-bg"></div>
   <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
     <ng-template #title>
       <span class="login__title">Sign In</span>
     </ng-template>
-    <form class="login__form">
+    <form class="login__form" (submit)="onSubmit($event)">
       <div class="p-field login__field">
         <label for="email" class="login__label">Email</label>
         <input
@@ -13,6 +14,9 @@
           type="email"
           placeholder="Enter your email"
           class="login__input"
+          [(ngModel)]="email"
+          name="email"
+          required
         />
       </div>
       <div class="p-field login__field">
@@ -23,9 +27,11 @@
           type="password"
           placeholder="Enter your password"
           class="login__input"
+          [(ngModel)]="password"
+          name="password"
+          required
         />
       </div>
-
       <button
         pButton
         type="submit"
