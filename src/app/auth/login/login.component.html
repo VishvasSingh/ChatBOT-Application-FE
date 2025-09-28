@@ -1,0 +1,37 @@
+<div class="login__container">
+  <div class="login__blur-bg"></div>
+  <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
+    <ng-template #title>
+      <span class="login__title">Sign In</span>
+    </ng-template>
+    <form class="login__form">
+      <div class="p-field login__field">
+        <label for="email" class="login__label">Email</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          placeholder="Enter your email"
+          class="login__input"
+        />
+      </div>
+      <div class="p-field login__field">
+        <label for="password" class="login__label">Password</label>
+        <input
+          pInputText
+          id="password"
+          type="password"
+          placeholder="Enter your password"
+          class="login__input"
+        />
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        label="Login"
+        class="login__button w-full mt-3"
+      ></button>
+    </form>
+  </p-card>
+</div>

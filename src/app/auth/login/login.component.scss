@@ -1,0 +1,89 @@
+.login__container {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login__blur-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url("https://www.shutterstock.com/image-photo/business-hand-worker-holding-analytics-260nw-2209167625.jpg")
+    center/cover no-repeat;
+  filter: blur(12px) brightness(0.7);
+  z-index: 0;
+}
+
+// Card and form styles remain above the blur
+.p-card,
+.login__form,
+.login__title,
+.login__field,
+.login__label,
+.login__input,
+.login__actions,
+.login__button {
+  position: relative;
+  z-index: 1;
+}
+
+.login__title {
+  display: block;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.login__label {
+  font-weight: 500;
+}
+
+.login__input {
+  width: 100%;
+}
+
+.login__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.login__remember-label {
+  margin-left: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.login__forgot {
+  margin-left: auto;
+  font-size: 0.95rem;
+  color: #2196f3;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.login__forgot:hover {
+  color: #1769aa;
+}
+
+.login__button {
+  margin-top: 1rem;
+}
