@@ -1,0 +1,18 @@
+.p-card {
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+:host ::ng-deep .p-table {
+  width: 100%;
+}
+
+.home__button {
+  margin-top: 1rem;
+  display: block;
+  margin-left: auto;
+  position: relative;
+  z-index: 1;
+  width: 20%;
+  height: 10%;
+}
