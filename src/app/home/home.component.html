@@ -1,35 +1,95 @@
+<p-toast></p-toast>
+<!-- Add p-toast for messages -->
+
+<p-confirmDialog></p-confirmDialog> <!-- Add PrimeNG ConfirmDialog component -->
+
 <p-card header="Welcome to the Dashboard">
   <p>Here you can manage your projects and view recent activity.</p>
-<ng-template pTemplate="footer">
-    <p-button label="Create New Project" (click)="createNewProject()">
-      </p-button>
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Create New Project"
+      icon="pi pi-plus"
+      (click)="createNewProject()"
+    >
+    </p-button>
   </ng-template>
-
 </p-card>
-
 
 <p-card header="Active Projects">
   <p-table [value]="projects" [loading]="loading">
     <ng-template pTemplate="header">
       <tr>
-        <th>Name</th>
-        <th>Status</th>
-        <th>Date of Creation</th>
-        <th>Actions</th>
+        <th class="table-cell">Name</th>
+        <th class="table-cell">Date of Creation</th>
+        <th class="table-cell">Project Description</th>
+        <th class="table-cell table-cell--actions">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-project>
       <tr>
-        <td>{{ project.name }}</td>
-        <td>{{ project.status }}</td>
-        <td>
-          <button
-            pButton
-            type="button"
-            label="View"
-            class="p-button-outlined p-button-info"
-          ></button>
+        <td class="table-cell">{{ project.name }}</td>
+        <td class="table-cell">{{ project.created_at | date: 'shortDate' }}</td>
+        <td class="table-cell">{{ project.description }}</td>
+        <td class="table-cell table-cell--actions">
+          <i class="pi pi-folder" style="font-size: 1rem"></i>
+          <i class="pi pi-trash" style="font-size: 1rem" (click)="confirmDeleteProject(project)"></i>
+        </td>
       </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+          <td colspan="4" class="table-cell">No active projects found.</td>
+      </tr>
+  </ng-template>
   </p-table>
 </p-card>
+
+<!-- New Project Creation Dialog (Wizard Step 1) -->
+<p-dialog
+  header="Create New Project"
+  [(visible)]="displayNewProjectDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '50vw' }"
+>
+  <div class="p-fluid home-dialog__content">
+    <div class="p-field home-dialog__field">
+      <label for="projectName">Project Name</label>
+      <input
+        pInputText
+        id="projectName"
+        type="text"
+        [(ngModel)]="newProjectName"
+        required
+        autofocus
+      />
+    </div>
+    <div class="p-field home-dialog__field">
+      <label for="projectDescription">Project Description</label>
+      <input
+        pInputText
+        id="projectDescription"
+        type="text"
+        [(ngModel)]="newProjectDescription"
+        required
+        autofocus
+      />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      (onClick)="displayNewProjectDialog = false"
+      styleClass="p-button-text"
+    ></p-button>
+    <p-button
+      label="Create"
+      icon="pi pi-check"
+      (onClick)="submitNewProject()"
+      [disabled]="!newProjectName.trim()"
+    ></p-button>
+  </ng-template>
+</p-dialog>

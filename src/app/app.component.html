@@ -1,3 +1,6 @@
-
 <router-outlet></router-outlet>
 
+<!-- Spinner UI -->
+<p-blockUI [blocked]="spinnerService.isLoading()">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

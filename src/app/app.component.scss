@@ -1,0 +1,18 @@
+// Styles for the spinner overlay to center the progress spinner
+:host ::ng-deep {
+  .p-blockui {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(
+      0,
+      0,
+      0,
+      0.4
+    ); /* Optional: Adjust background transparency */
+  }
+
+  .p-progress-spinner {
+    z-index: 10000; /* Ensure spinner is above other elements */
+  }
+}

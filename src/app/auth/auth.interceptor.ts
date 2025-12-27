@@ -1,25 +1,45 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
-  HttpInterceptor,
   HttpRequest,
   HttpHandler,
   HttpEvent,
+  HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router'; // Import Router
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  // Inject Router for navigation
+  private router = inject(Router);
+
   intercept(
-    req: HttpRequest<any>,
+    request: HttpRequest<unknown>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem('firebaseToken');
+
+    let clonedRequest = request;
     if (token) {
-      const cloned = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` },
+      clonedRequest = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      return next.handle(cloned);
     }
-    return next.handle(req);
+
+    return next.handle(clonedRequest).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          // Handle 401 Unauthorized error
+          console.error('Unauthorized request - redirecting to login:', error);
+          localStorage.removeItem('firebaseToken'); // Remove invalid token
+          this.router.navigate(['/']); // Redirect to login page
+        }
+        return throwError(() => error); // Re-throw the error for other handlers/components
+      })
+    );
   }
 }

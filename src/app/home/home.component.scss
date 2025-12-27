@@ -6,3 +6,63 @@
 :host ::ng-deep .p-table {
   width: 100%;
 }
+
+.table-cell {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle; // Ensure consistent vertical alignment
+  font-size: 0.875rem; // Professional font size for readability
+  line-height: 1.4; // Improve line height for better readability
+}
+
+.table-cell--actions {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 0.5rem;
+  padding: 1rem 1rem; // Match padding with other cells
+  border-bottom: 1px solid #e0e0e0;
+
+  i {
+    cursor: pointer; // Indicate icons are clickable
+    transition: color 0.2s ease; // Smooth hover effect
+
+    &:hover {
+      color: var(--p-button-primary-background); // Change color on hover for better UX
+    }
+  }
+}
+
+.home-dialog {
+  // Styles for the create project dialog
+  // Target the PrimeNG dialog element more specifically
+  // The .p-dialog class is automatically applied by PrimeNG to the dialog's root element.
+  &__create-project {
+    // <-- Make selector more specific
+    width: 60vw; // Set a specific width for the dialog
+    min-width: 300px; // Ensure it's not too small on smaller screens
+
+    // Responsive adjustments
+    @media screen and (max-width: 991px) {
+      width: 50vw;
+    }
+
+    @media screen and (max-width: 767px) {
+      width: 90vw;
+    }
+  }
+
+  &__content {
+    padding: 1rem 0; // Add padding around the content within the dialog
+  }
+
+  &__field {
+    margin-bottom: 1.5rem; // Add spacing between fields if more are added
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block; // Ensure label takes full width for margin to apply
+    }
+  }
+}
