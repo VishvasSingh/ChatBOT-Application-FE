@@ -29,10 +29,33 @@
       <tr>
         <td class="table-cell">{{ project.name }}</td>
         <td class="table-cell">{{ project.created_at | date: 'shortDate' }}</td>
-        <td class="table-cell">{{ project.description }}</td>
+        <td class="table-cell table-cell--description">
+          <!-- Truncate description and show 'view more' icon -->
+          <ng-container *ngIf="project.description && project.description.length > descriptionMaxLength; else fullDescription">
+            {{ project.description | slice:0:descriptionMaxLength }}...
+            <i
+              class="pi pi-info-circle home-dialog__view-description-btn"
+              (click)="showFullDescription(project.description)"
+              pTooltip="View Full Description"
+              tooltipPosition="right"
+              style="font-size: 1rem; cursor: pointer; "
+            ></i>
+          </ng-container>
+          <ng-template #fullDescription>
+            <!-- Show full description if it's short or empty -->
+            {{ project.description }}
+          </ng-template>
+        </td>
         <td class="table-cell table-cell--actions">
-          <i class="pi pi-folder" style="font-size: 1rem"></i>
-          <i class="pi pi-trash" style="font-size: 1rem" (click)="confirmDeleteProject(project)"></i>
+          <!-- Use icons directly for actions -->
+          <i class="pi pi-folder" pTooltip="View Project" tooltipPosition="bottom" style="font-size: 1rem; cursor: pointer;"></i>
+          <i
+            class="pi pi-trash"
+            pTooltip="Delete Project"
+            tooltipPosition="bottom"
+            style="font-size: 1rem; cursor: pointer;"
+            (click)="confirmDeleteProject(project)"
+          ></i>
         </td>
       </tr>
     </ng-template>
@@ -73,7 +96,6 @@
         type="text"
         [(ngModel)]="newProjectDescription"
         required
-        autofocus
       />
     </div>
   </div>
@@ -90,6 +112,30 @@
       icon="pi pi-check"
       (onClick)="submitNewProject()"
       [disabled]="!newProjectName.trim()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- Full Project Description Dialog -->
+<p-dialog
+  header="Project Description"
+  [(visible)]="displayFullDescriptionDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="home-dialog__full-description"
+>
+  <div class="p-fluid home-dialog__content">
+    <p class="home-dialog__full-description-text">
+      {{ fullDescriptionContent }}
+    </p>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Close"
+      icon="pi pi-times"
+      (onClick)="displayFullDescriptionDialog = false"
+      styleClass="p-button-text"
     ></p-button>
   </ng-template>
 </p-dialog>

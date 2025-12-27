@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Project {
-  _id: string; // Changed from 'id' to '_id' as per backend response
+  _id: string; // As per backend response
   name: string;
-  status: string;
-  dateOfCreation: string; // Assuming date string
+  description: string; // Added description field
+  created_at: string; // As per HTML, changed from dateOfCreation
 }
 
 @Injectable({

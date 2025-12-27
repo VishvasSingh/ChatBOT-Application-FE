@@ -11,9 +11,17 @@
   padding: 0.75rem 1rem;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
-  vertical-align: middle; // Ensure consistent vertical alignment
-  font-size: 0.875rem; // Professional font size for readability
-  line-height: 1.4; // Improve line height for better readability
+  vertical-align: middle;
+  font-size: 0.875rem;
+  line-height: 1.4;
+
+  &--description {
+    i {
+      &:hover {
+        color: var(--p-primary-color); // Change color on hover for better UX
+      }
+    }
+  }
 }
 
 .table-cell--actions {
@@ -50,6 +58,33 @@
 
     @media screen and (max-width: 767px) {
       width: 90vw;
+    }
+  }
+
+  &__full-description.p-dialog { // New dialog for full description
+    width: 40vw !important; // Specific width
+    min-width: 350px;
+
+    @media screen and (max-width: 991px) {
+      width: 60vw !important;
+    }
+    @media screen and (max-width: 767px) {
+      width: 95vw !important;
+    }
+  }
+
+  &__full-description-text {
+    white-space: pre-wrap; // Preserve whitespace and allow wrapping
+    word-break: break-word; // Break long words to prevent overflow
+    max-height: 70vh; // Limit height for scrollability
+    overflow-y: auto; // Add scroll if content is too long
+    padding-right: 0.5rem; // Provide space for the scrollbar
+  }
+
+  &__view-description-btn {
+    flex-shrink: 0; // Prevent button from shrinking
+    .p-button-icon {
+      font-size: 0.875rem !important; // Adjust icon size if needed
     }
   }
 

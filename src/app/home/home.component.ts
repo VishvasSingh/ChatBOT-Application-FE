@@ -8,13 +8,10 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
-import {
-  MessageService,
-  ConfirmationService,
-  ConfirmEventType,
-} from 'primeng/api'; // Import ConfirmationService and ConfirmEventType
-import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Import ConfirmDialogModule
+import { MessageService, ConfirmationService, ConfirmEventType } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Router } from '@angular/router';
+import { TooltipModule } from 'primeng/tooltip'; // Add TooltipModule
 
 @Component({
   selector: 'app-home',
@@ -28,9 +25,10 @@ import { Router } from '@angular/router';
     InputTextModule,
     FormsModule,
     ToastModule,
-    ConfirmDialogModule, // Add ConfirmDialogModule
+    ConfirmDialogModule,
+    TooltipModule, // Add TooltipModule here
   ],
-  providers: [MessageService, ConfirmationService], // Provide MessageService and ConfirmationService
+  providers: [MessageService, ConfirmationService],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -39,7 +37,12 @@ export class HomeComponent implements OnInit {
   loading = true;
   displayNewProjectDialog: boolean = false;
   newProjectName: string = '';
-  newProjectDescription: string = '';
+  newProjectDescription: string = ''; // Added for project creation form
+
+  // For description truncation and full view
+  descriptionMaxLength: number = 50; // Max length before truncation
+  displayFullDescriptionDialog: boolean = false;
+  fullDescriptionContent: string = ''; // Content for the full description dialog
 
   private projectService = inject(ProjectService);
   private messageService = inject(MessageService);
@@ -71,6 +74,7 @@ export class HomeComponent implements OnInit {
 
   createNewProject() {
     this.newProjectName = '';
+    this.newProjectDescription = ''; // Clear description as well
     this.displayNewProjectDialog = true;
   }
 
@@ -84,8 +88,10 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    this.projectService.createProject({ name: this.newProjectName, 
-      description: this.newProjectDescription }).subscribe({
+    this.projectService.createProject({
+      name: this.newProjectName,
+      description: this.newProjectDescription // Include description
+    }).subscribe({
       next: (project) => {
         this.messageService.add({
           severity: 'success',
@@ -156,5 +162,11 @@ export class HomeComponent implements OnInit {
         });
       },
     });
+  }
+
+  // New method to show full project description in a dialog
+  showFullDescription(description: string): void {
+    this.fullDescriptionContent = description;
+    this.displayFullDescriptionDialog = true;
   }
 }
