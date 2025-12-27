@@ -7,6 +7,7 @@ export interface Project {
   name: string;
   description: string; // Added description field
   created_at: string; // As per HTML, changed from dateOfCreation
+
 }
 
 @Injectable({
@@ -21,7 +22,7 @@ export class ProjectService {
   }
 
   // New method to create a project
-  createProject(projectData: { name: string , description: string}): Observable<Project> {
+  createProject(projectData: { name: string , description: string, initial_members: string[]}): Observable<Project> {
     return this.http.post<Project>(`${this.apiUrl}/projects`, projectData);
   }
 

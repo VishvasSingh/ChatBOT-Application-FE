@@ -8,10 +8,23 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
-import { MessageService, ConfirmationService, ConfirmEventType } from 'primeng/api';
+import {
+  MessageService,
+  ConfirmationService,
+  ConfirmEventType,
+} from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Router } from '@angular/router';
-import { TooltipModule } from 'primeng/tooltip'; // Add TooltipModule
+import { TooltipModule } from 'primeng/tooltip';
+import { AutoCompleteModule } from 'primeng/autocomplete'; // 1. Import AutoCompleteModule
+import { UserService, UserSummary } from '../services/user.service'; // 2. Import UserService
+import { Subject, of } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  catchError,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +39,8 @@ import { TooltipModule } from 'primeng/tooltip'; // Add TooltipModule
     FormsModule,
     ToastModule,
     ConfirmDialogModule,
-    TooltipModule, // Add TooltipModule here
+    TooltipModule,
+    AutoCompleteModule, // 3. Add AutoCompleteModule to imports
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './home.component.html',
@@ -37,7 +51,12 @@ export class HomeComponent implements OnInit {
   loading = true;
   displayNewProjectDialog: boolean = false;
   newProjectName: string = '';
-  newProjectDescription: string = ''; // Added for project creation form
+  newProjectDescription: string = '';
+
+  // 4. Add properties for user search and selection
+  selectedUsers: UserSummary[] = [];
+  userSearchResults: UserSummary[] = [];
+  private searchSubject = new Subject<string>();
 
   // For description truncation and full view
   descriptionMaxLength: number = 50; // Max length before truncation
@@ -46,11 +65,37 @@ export class HomeComponent implements OnInit {
 
   private projectService = inject(ProjectService);
   private messageService = inject(MessageService);
-  private confirmationService = inject(ConfirmationService); // Inject ConfirmationService
+  private confirmationService = inject(ConfirmationService);
   private router = inject(Router);
+  private userService = inject(UserService); // 5. Inject UserService
 
   ngOnInit() {
     this.loadProjects();
+
+    // 6. Set up debounced user search
+    this.searchSubject
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          if (query.length < 2) {
+            // If the query is too short, return an empty array
+            // without making an API call.
+            return of([]);
+          }
+          return this.userService.searchUsers(query).pipe(
+            catchError((error) => {
+              // Log the error for debugging purposes
+              console.error('Error during user search:', error);
+              // Return an empty observable to prevent the main stream from breaking
+              return of([]);
+            })
+          );
+        })
+      )
+      .subscribe((users) => {
+        this.userSearchResults = users;
+      });
   }
 
   loadProjects() {
@@ -74,7 +119,9 @@ export class HomeComponent implements OnInit {
 
   createNewProject() {
     this.newProjectName = '';
-    this.newProjectDescription = ''; // Clear description as well
+    this.newProjectDescription = '';
+    this.selectedUsers = []; // 7. Clear selected users
+    this.userSearchResults = []; // Clear previous search results
     this.displayNewProjectDialog = true;
   }
 
@@ -88,28 +135,39 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    this.projectService.createProject({
-      name: this.newProjectName,
-      description: this.newProjectDescription // Include description
-    }).subscribe({
-      next: (project) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: `Project "${project.name}" created successfully.`,
-        });
-        this.displayNewProjectDialog = false;
-        this.loadProjects();
-      },
-      error: (error) => {
-        console.error('Failed to create project:', error); // Log the full error
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create project. Please try again.',
-        });
-      },
-    });
+    // 8. Map selected users to their UUIDs
+    const selectedUserUuids = this.selectedUsers.map((user) => user.user_uuid);
+
+    this.projectService
+      .createProject({
+        name: this.newProjectName,
+        description: this.newProjectDescription,
+        initial_members: selectedUserUuids, // 9. Add user UUIDs to payload
+      })
+      .subscribe({
+        next: (project) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `Project "${project.name}" created successfully.`,
+          });
+          this.displayNewProjectDialog = false;
+          this.loadProjects();
+        },
+        error: (error) => {
+          console.error('Failed to create project:', error); // Log the full error
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to create project. Please try again.',
+          });
+        },
+      });
+  }
+
+  // 10. New method to handle search input and push to the subject
+  searchUsers(event: { query: string }) {
+    this.searchSubject.next(event.query);
   }
 
   // Method to confirm project deletion

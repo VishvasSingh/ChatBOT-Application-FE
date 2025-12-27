@@ -1,7 +1,8 @@
 <p-toast></p-toast>
 <!-- Add p-toast for messages -->
 
-<p-confirmDialog></p-confirmDialog> <!-- Add PrimeNG ConfirmDialog component -->
+<p-confirmDialog></p-confirmDialog>
+<!-- Add PrimeNG ConfirmDialog component -->
 
 <p-card header="Welcome to the Dashboard">
   <p>Here you can manage your projects and view recent activity.</p>
@@ -28,17 +29,25 @@
     <ng-template pTemplate="body" let-project>
       <tr>
         <td class="table-cell">{{ project.name }}</td>
-        <td class="table-cell">{{ project.created_at | date: 'shortDate' }}</td>
+        <td class="table-cell">
+          {{ project.created_at | date : "shortDate" }}
+        </td>
         <td class="table-cell table-cell--description">
           <!-- Truncate description and show 'view more' icon -->
-          <ng-container *ngIf="project.description && project.description.length > descriptionMaxLength; else fullDescription">
-            {{ project.description | slice:0:descriptionMaxLength }}...
+          <ng-container
+            *ngIf="
+              project.description &&
+                project.description.length > descriptionMaxLength;
+              else fullDescription
+            "
+          >
+            {{ project.description | slice : 0 : descriptionMaxLength }}...
             <i
               class="pi pi-info-circle home-dialog__view-description-btn"
               (click)="showFullDescription(project.description)"
               pTooltip="View Full Description"
               tooltipPosition="right"
-              style="font-size: 1rem; cursor: pointer; "
+              style="font-size: 1rem; cursor: pointer"
             ></i>
           </ng-container>
           <ng-template #fullDescription>
@@ -48,12 +57,17 @@
         </td>
         <td class="table-cell table-cell--actions">
           <!-- Use icons directly for actions -->
-          <i class="pi pi-folder" pTooltip="View Project" tooltipPosition="bottom" style="font-size: 1rem; cursor: pointer;"></i>
+          <i
+            class="pi pi-folder"
+            pTooltip="View Project"
+            tooltipPosition="bottom"
+            style="font-size: 1rem; cursor: pointer"
+          ></i>
           <i
             class="pi pi-trash"
             pTooltip="Delete Project"
             tooltipPosition="bottom"
-            style="font-size: 1rem; cursor: pointer;"
+            style="font-size: 1rem; cursor: pointer"
             (click)="confirmDeleteProject(project)"
           ></i>
         </td>
@@ -61,9 +75,9 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-          <td colspan="4" class="table-cell">No active projects found.</td>
+        <td colspan="4" class="table-cell">No active projects found.</td>
       </tr>
-  </ng-template>
+    </ng-template>
   </p-table>
 </p-card>
 
@@ -97,6 +111,34 @@
         [(ngModel)]="newProjectDescription"
         required
       />
+    </div>
+
+    <!-- Add AutoComplete for adding users -->
+    <div class="p-field home-dialog__field">
+      <label for="projectUsers">Add Users to Project</label>
+      <p-autoComplete
+        id="projectUsers"
+        [(ngModel)]="selectedUsers"
+        [suggestions]="userSearchResults"
+        (completeMethod)="searchUsers($event)"
+        fluid
+        multiple
+        placeholder="Search by name or email"
+        [appendTo]="'body'"
+      >
+        <ng-template let-user pTemplate="item">
+          <div class="user-suggestion-item">
+            <div>{{ user.full_name }}</div>
+            <small>{{ user.email }}</small>
+          </div>
+        </ng-template>
+
+        <ng-template let-selected_user pTemplate="selecteditem">
+          <div class="user-suggestion-item">
+            <div>{{ selected_user.full_name }}</div>
+          </div>
+        </ng-template>
+      </p-autoComplete>
     </div>
   </div>
 
