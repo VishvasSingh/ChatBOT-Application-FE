@@ -4,86 +4,84 @@
 <p-confirmDialog></p-confirmDialog>
 <!-- Add PrimeNG ConfirmDialog component -->
 <div>
-<p-card header="Welcome to the Dashboard">
-  <p>Here you can manage your projects and view recent activity.</p>
-  <ng-template pTemplate="footer">
-    <p-button
-      label="Create New Project"
-      icon="pi pi-plus"
-      (click)="createNewProject()"
-    >
-    </p-button>
-  </ng-template>
-</p-card>
-
-<p-card header="Active Projects">
-  <p-table [value]="projects" [loading]="loading">
-    <ng-template pTemplate="header">
-      <tr>
-        <th class="table-cell">Name</th>
-        <th class="table-cell">Date of Creation</th>
-        <th class="table-cell">Project Description</th>
-        <th class="table-cell table-cell--actions">Actions</th>
-      </tr>
+  <p-card header="Welcome to the Dashboard">
+    <p>Here you can manage your projects and view recent activity.</p>
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Create New Project"
+        icon="pi pi-plus"
+        (click)="createNewProject()"
+      >
+      </p-button>
     </ng-template>
-    <ng-template pTemplate="body" let-project>
-      <tr>
-        <td class="table-cell">{{ project.name }}</td>
-        <td class="table-cell">
-          {{ project.created_at | date : "shortDate" }}
-        </td>
-        <td class="table-cell table-cell--description">
-          <!-- Truncate description and show 'view more' icon -->
-          <ng-container
-            *ngIf="
-              project.description &&
-                project.description.length > descriptionMaxLength;
-              else fullDescription
-            "
-          >
-            {{ project.description | slice : 0 : descriptionMaxLength }}...
+  </p-card>
+
+  <p-card header="Active Projects">
+    <p-table [value]="projects" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-cell">Name</th>
+          <th class="table-cell">Date of Creation</th>
+          <th class="table-cell">Project Description</th>
+          <th class="table-cell table-cell--actions">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-project>
+        <tr>
+          <td class="table-cell">{{ project.name }}</td>
+          <td class="table-cell">
+            {{ project.created_at | date : "shortDate" }}
+          </td>
+          <td class="table-cell table-cell--description">
+            <!-- Truncate description and show 'view more' icon -->
+            <ng-container
+              *ngIf="
+                project.description &&
+                  project.description.length > descriptionMaxLength;
+                else fullDescription
+              "
+            >
+              {{ project.description | slice : 0 : descriptionMaxLength }}...
+              <i
+                class="pi pi-info-circle home-dialog__view-description-btn"
+                (click)="showFullDescription(project.description)"
+                pTooltip="View Full Description"
+                tooltipPosition="right"
+                style="font-size: 1rem; cursor: pointer"
+              ></i>
+            </ng-container>
+            <ng-template #fullDescription>
+              <!-- Show full description if it's short or empty -->
+              {{ project.description }}
+            </ng-template>
+          </td>
+          <td class="table-cell table-cell--actions">
+            <!-- Use icons directly for actions -->
             <i
-              class="pi pi-info-circle home-dialog__view-description-btn"
-              (click)="showFullDescription(project.description)"
-              pTooltip="View Full Description"
-              tooltipPosition="right"
+              class="pi pi-folder"
+              pTooltip="View Project"
+              tooltipPosition="bottom"
               style="font-size: 1rem; cursor: pointer"
+              (click)="viewProject(project)"
             ></i>
-          </ng-container>
-          <ng-template #fullDescription>
-            <!-- Show full description if it's short or empty -->
-            {{ project.description }}
-          </ng-template>
-        </td>
-        <td class="table-cell table-cell--actions">
-          <!-- Use icons directly for actions -->
-          <i
-            class="pi pi-folder"
-            pTooltip="View Project"
-            tooltipPosition="bottom"
-            style="font-size: 1rem; cursor: pointer"
-          ></i>
-          <i
-            class="pi pi-trash"
-            pTooltip="Delete Project"
-            tooltipPosition="bottom"
-            style="font-size: 1rem; cursor: pointer"
-            (click)="confirmDeleteProject(project)"
-          ></i>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="table-cell">No active projects found.</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</p-card>
-
+            <i
+              class="pi pi-trash"
+              pTooltip="Delete Project"
+              tooltipPosition="bottom"
+              style="font-size: 1rem; cursor: pointer"
+              (click)="confirmDeleteProject(project)"
+            ></i>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="table-cell">No active projects found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
 </div>
-
-
 
 <!-- New Project Creation Dialog (Wizard Step 1) -->
 <p-dialog

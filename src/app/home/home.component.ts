@@ -170,6 +170,14 @@ export class HomeComponent implements OnInit {
     this.searchSubject.next(event.query);
   }
 
+  /**
+   * Navigates to the dashboard for a specific project.
+   * @param project The project to view.
+   */
+  viewProject(project: Project): void {
+    this.router.navigate(['/projects', project._id, 'dashboard']);
+  }
+
   // Method to confirm project deletion
   confirmDeleteProject(project: Project) {
     this.confirmationService.confirm({

@@ -36,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
           // Handle 401 Unauthorized error
           console.error('Unauthorized request - redirecting to login:', error);
           localStorage.removeItem('firebaseToken'); // Remove invalid token
-          this.router.navigate(['/']); // Redirect to login page
+          this.router.navigate(['/login']); // Redirect to login page
         }
         return throwError(() => error); // Re-throw the error for other handlers/components
       })

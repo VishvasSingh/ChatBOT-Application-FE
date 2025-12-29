@@ -1,0 +1,23 @@
+<div *ngIf="projectId">
+  <p-card [header]="'Project Dashboard - ' + projectId">
+    <p>
+      Welcome to your project. All project-specific details and actions will be
+      available here.
+    </p>
+    <!-- Future components like document upload, chat interface, etc., will go here -->
+  </p-card>
+</div>
+
+<div class="card-container">
+  <p-card
+    [header]="'File upload'"
+    class="card-container__card"
+    [routerLink]="['/projects', projectId, 'files']"
+  >
+    <p>Here you can upload files related to your project.</p>
+  </p-card>
+
+  <p-card [header]="'Chat with Files'" class="card-container__card">
+    <p>Use AI to analyze your files.</p>
+  </p-card>
+</div>

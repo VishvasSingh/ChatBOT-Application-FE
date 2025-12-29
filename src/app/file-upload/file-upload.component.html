@@ -1,0 +1,20 @@
+<p-toast></p-toast>
+<div *ngIf="projectId" class="file-upload-container">
+  <p-card [header]="'Upload Files for Project: ' + projectId">
+    <p-fileUpload
+      name="files"
+      [url]="uploadUrl"
+      (onUpload)="onUpload($event)"
+      (onError)="onError($event)"
+      [multiple]="true"
+      accept="application/pdf,application/msword,.docx"
+      maxFileSize="10000000"
+    >
+      <ng-template pTemplate="content">
+        <p class="p-fileupload-empty">
+          Drag and drop files here to upload, or click to browse.
+        </p>
+      </ng-template>
+    </p-fileUpload>
+  </p-card>
+</div>

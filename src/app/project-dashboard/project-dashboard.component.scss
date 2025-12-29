@@ -1,0 +1,23 @@
+/* Add component-specific styles here */
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.card-container {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+
+  &__card {
+    flex: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: var(--p-primary-color);
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+  }
+}
