@@ -1,20 +1,54 @@
 <p-toast></p-toast>
 <div *ngIf="projectId" class="file-upload-container">
   <p-card [header]="'Upload Files for Project: ' + projectId">
+    
     <p-fileUpload
       name="files"
-      [url]="uploadUrl"
-      (onUpload)="onUpload($event)"
-      (onError)="onError($event)"
+      [customUpload]="true" 
+      (uploadHandler)="onBatchUpload($event)"
       [multiple]="true"
       accept="application/pdf,application/msword,.docx"
       maxFileSize="10000000"
     >
-      <ng-template pTemplate="content">
-        <p class="p-fileupload-empty">
-          Drag and drop files here to upload, or click to browse.
-        </p>
+      <ng-template pTemplate="content" let-files let-removeFileCallback="removeFileCallback">
+        <div *ngIf="files?.length > 0" class="file-list">
+  
+            <div *ngFor="let file of files; let i = index" class="file-row p-3 mb-2 shadow-1 border-round surface-card">
+                
+                <div class="file-info">
+                <i class="pi pi-file mr-2 text-primary"></i>
+                <span class="font-bold">{{ file.name }}</span>
+                <span class="text-sm text-500 ml-2">({{ file.size / 1024 | number:'1.0-2' }} KB)</span>
+                </div>
+
+                <div class="file-controls">
+                <p-select 
+                    [options]="languages" 
+                    [(ngModel)]="fileMetadata[file.name]" 
+                    placeholder="Select Language"
+                    appendTo="body" 
+                    [style]="{'width':'150px'}"
+                    class="mr-2">
+                </p-select>
+
+                <button 
+                    pButton 
+                    icon="pi pi-times" 
+                    class="p-button-danger p-button-text p-button-rounded" 
+                    (click)="removeFileCallback($event, i)"
+                    title="Remove">
+                </button>
+                </div>
+
+            </div>
+            </div>
+
+        <div *ngIf="!files || files.length === 0" class="p-fileupload-empty text-center p-5 text-500">
+          <i class="pi pi-cloud-upload text-4xl mb-3"></i>
+          <p>Drag and drop files here to upload, or click 'Choose' to browse.</p>
+        </div>
       </ng-template>
+
     </p-fileUpload>
   </p-card>
 </div>

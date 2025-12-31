@@ -4,6 +4,50 @@
 }
 
 .file-upload-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
+}
+
+/* File List Styling */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--surface-0);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  
+  i {
+    font-size: 1.5rem;
+  }
+}
+
+.file-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Override empty message styling */
+.p-fileupload-empty {
+  border: 2px dashed var(--surface-300);
+  border-radius: 6px;
+  background-color: var(--surface-50);
 }
