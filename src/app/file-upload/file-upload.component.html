@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 <div *ngIf="projectId" class="file-upload-container">
-  <p-card [header]="'Upload Files for Project: ' + projectId">
-    
+  
+  <p-card [header]="'Upload Files for Project: ' + projectId" class="mb-4">
     <p-fileUpload
       name="files"
       [customUpload]="true" 
@@ -12,43 +12,115 @@
     >
       <ng-template pTemplate="content" let-files let-removeFileCallback="removeFileCallback">
         <div *ngIf="files?.length > 0" class="file-list">
-  
             <div *ngFor="let file of files; let i = index" class="file-row p-3 mb-2 shadow-1 border-round surface-card">
-                
                 <div class="file-info">
-                <i class="pi pi-file mr-2 text-primary"></i>
-                <span class="font-bold">{{ file.name }}</span>
-                <span class="text-sm text-500 ml-2">({{ file.size / 1024 | number:'1.0-2' }} KB)</span>
+                  <i class="pi pi-file mr-2 text-primary"></i>
+                  <span class="font-bold">{{ file.name }}</span>
+                  <span class="text-sm text-500 ml-2">({{ file.size / 1024 | number:'1.0-2' }} KB)</span>
                 </div>
-
                 <div class="file-controls">
-                <p-select 
-                    [options]="languages" 
-                    [(ngModel)]="fileMetadata[file.name]" 
-                    placeholder="Select Language"
-                    appendTo="body" 
-                    [style]="{'width':'150px'}"
-                    class="mr-2">
-                </p-select>
-
-                <button 
-                    pButton 
-                    icon="pi pi-times" 
-                    class="p-button-danger p-button-text p-button-rounded" 
-                    (click)="removeFileCallback($event, i)"
-                    title="Remove">
-                </button>
+                  <p-select 
+                      [options]="languages" 
+                      [(ngModel)]="fileMetadata[file.name]" 
+                      placeholder="Select Language"
+                      appendTo="body" 
+                      [style]="{'width':'150px'}"
+                      class="mr-2">
+                  </p-select>
+                  <button 
+                      pButton 
+                      icon="pi pi-times" 
+                      class="p-button-danger p-button-text p-button-rounded" 
+                      (click)="removeFileCallback($event, i)"
+                      title="Remove">
+                  </button>
                 </div>
-
             </div>
-            </div>
-
+        </div>
         <div *ngIf="!files || files.length === 0" class="p-fileupload-empty text-center p-5 text-500">
           <i class="pi pi-cloud-upload text-4xl mb-3"></i>
           <p>Drag and drop files here to upload, or click 'Choose' to browse.</p>
         </div>
       </ng-template>
-
     </p-fileUpload>
+  </p-card>
+
+  <p-card header="Project Files">
+    <p-tabs value="0">
+        <p-tablist>
+            <p-tab value="0">
+                <i class="pi pi-folder mr-2"></i> Source Files
+            </p-tab>
+            <p-tab value="1">
+                <i class="pi pi-file-edit mr-2"></i> English Documents
+            </p-tab>
+        </p-tablist>
+        
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <p-table [value]="sourceFiles" [loading]="isLoadingFiles" [tableStyle]="{ 'min-width': '50rem' }">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>File Name</th>
+                            <th>Uploaded By</th>
+                            <th>Source Language</th>
+                            <th>Size</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-file>
+                        <tr>
+                            <td>{{ file.source.filename }}</td>
+                            <td>{{ file.user_name }}</td>
+                            <td>{{ file.source_language | uppercase }}</td>
+                            <td>{{ file.source.size / 1024 | number:'1.0-2' }} KB</td>
+                            <td>{{ file.created_at | date:'short' }}</td>
+                            <td>
+                                <p-tag [value]="file.status" [severity]="getStatusSeverity(file.status)"></p-tag>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">No source files found.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabpanel>
+
+            <p-tabpanel value="1">
+                <p-table [value]="translatedFiles" [loading]="isLoadingFiles" [tableStyle]="{ 'min-width': '50rem' }">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>File Name</th>
+                            <th>Original File</th>
+                            <th>Target Language</th>
+                            <th>Size</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-file>
+                        <tr>
+                            <td>{{ file.translated?.filename }}</td>
+                            <td>{{ file.source.filename }}</td>
+                            <td>{{ file.target_language | uppercase }}</td>
+                            <td>{{ (file.translated?.size || 0) / 1024 | number:'1.0-2' }} KB</td>
+                            <td>{{ file.updated_at | date:'short' }}</td>
+                            <td>
+                                <p-button icon="pi pi-download" [rounded]="true" [text]="true" label="Download"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-4">No translated documents available yet.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
   </p-card>
 </div>
