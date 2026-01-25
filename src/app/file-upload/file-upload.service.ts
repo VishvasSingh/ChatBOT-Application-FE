@@ -105,4 +105,28 @@ export class FileUploadService {
       }
     );
   }
+
+  /**
+   * Triggers the translation job for the selected files.
+   * Endpoint: POST /api/v1/translation/{project_id}/trigger
+   */
+  
+  triggerTranslation(
+    projectId: string,
+    fileIds: string[],
+    targetLanguage: string = 'en'
+  ): Observable<any> {
+    const body = {
+      file_ids: fileIds,
+      target_language: targetLanguage,
+    };
+
+    return this.http.post(
+      `${this.apiUrl}/translation/${projectId}/trigger`,
+      body,
+      {
+        headers: this.getHeaders(projectId),
+      }
+    );
+  }
 }

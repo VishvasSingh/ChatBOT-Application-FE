@@ -58,9 +58,23 @@
         
         <p-tabpanels>
             <p-tabpanel value="0">
-                <p-table [value]="sourceFiles" [loading]="isLoadingFiles" [tableStyle]="{ 'min-width': '50rem' }">
+                <div class="flex align-items-end justify-content-flex-end mb-3">
+                    <!-- <h3 class="m-0 text-700">Source Files</h3> -->
+                    <p-button 
+                        label="Translate Selected" 
+                        icon="pi pi-language" 
+                        (onClick)="onTranslate()" 
+                        [disabled]="!selectedSourceFiles || selectedSourceFiles.length === 0 || isTranslating"
+                        [loading]="isTranslating">
+                    </p-button>
+                </div>
+                <p-table [value]="sourceFiles" [loading]="isLoadingFiles" [tableStyle]="{ 'min-width': '50rem' }" [(selection)]="selectedSourceFiles"
+                    dataKey="_id">
                     <ng-template pTemplate="header">
                         <tr>
+                            <th style="width: 4rem">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
                             <th>File Name</th>
                             <th>Uploaded By</th>
                             <th>Source Language</th>
@@ -72,6 +86,14 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-file>
                         <tr class="uploaded-file-list__row">
+                            <td>
+                                <p-tableCheckbox 
+                                    [value]="file" 
+                                    [disabled]="file.status !== 'ready'"
+                                    [pTooltip]="file.status !== 'ready' ? 'File not ready for translation' : ''"
+                                    tooltipPosition="top">
+                                </p-tableCheckbox>
+                            </td>
                             <td>{{ file.source.filename }}</td>
                             <td>{{ file.user_name }}</td>
                             <td>{{ file.source_language | uppercase }}</td>

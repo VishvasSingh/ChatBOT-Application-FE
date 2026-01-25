@@ -13,6 +13,7 @@ import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs'; // New Tabs module in v20
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 
 // Service & Model Import
 import {
@@ -35,6 +36,7 @@ import {
     TabsModule,
     TableModule,
     TagModule,
+    TooltipModule,
   ],
   providers: [MessageService],
   templateUrl: './file-upload.component.html',
@@ -56,6 +58,11 @@ export class FileUploadComponent implements OnInit {
   sourceFiles: UploadedFilesMetadata[] = [];
   translatedFiles: UploadedFilesMetadata[] = [];
   isLoadingFiles = false;
+  // Store selected files from the table
+  selectedSourceFiles: UploadedFilesMetadata[] = [];
+
+  // Loading state for the translate button
+  isTranslating = false;
 
   private route = inject(ActivatedRoute);
   private messageService = inject(MessageService);
@@ -196,6 +203,61 @@ export class FileUploadComponent implements OnInit {
         });
       },
     });
+  }
+
+  /**
+   * Trigger the translation endpoint for selected 'ready' files.
+   */
+  onTranslate(): void {
+    if (!this.projectId || this.selectedSourceFiles.length === 0) return;
+
+    // Filter to ensure we only send valid "ready" files, just in case
+    const validFiles = this.selectedSourceFiles.filter(
+      (f) => f.status === FileStatus.READY_FOR_TRANSLATION
+    );
+
+    if (validFiles.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'No Ready Files',
+        detail: 'Please select files that are ready for translation.',
+      });
+      return;
+    }
+
+    const fileIds = validFiles.map((f) => f._id);
+    this.isTranslating = true;
+
+    this.fileUploadService
+      .triggerTranslation(this.projectId, fileIds, 'en')
+      .subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Translation Started',
+            detail: `Job started for ${response.files_count} files.`,
+          });
+
+          // Clear selection and refresh list to show updated statuses (e.g., 'translating')
+          this.selectedSourceFiles = [];
+          this.fetchFiles();
+          this.isTranslating = false;
+        },
+        error: (err) => {
+          console.error('Translation trigger error:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to trigger translation job.',
+          });
+          this.isTranslating = false;
+        },
+      });
+  }
+
+  // Helper to disable checkbox for non-ready files
+  isReadyForTranslation(status: string): boolean {
+    return status === FileStatus.READY_FOR_TRANSLATION;
   }
 
   // Helper to get severity for status tags
