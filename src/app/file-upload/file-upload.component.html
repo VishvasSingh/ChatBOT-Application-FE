@@ -82,8 +82,8 @@
                             </td>
                             <td>
                                 <div class="uploaded-file-list__actions">
-                                    <p-button icon="pi pi-download" [rounded]="true" [text]="true" severity="secondary"></p-button>
-                                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"></p-button>
+                                    <p-button icon="pi pi-download" [rounded]="true" [text]="true" severity="secondary" (click)="onDownload(file, 'source')" pTooltip="Download Source" tooltipPosition="top"></p-button>
+                                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="onDelete(file)" pTooltip="Delete File" tooltipPosition="top"></p-button>
                                 </div>
                             </td>
                         </tr>
@@ -117,8 +117,8 @@
                             <td>{{ file.updated_at | date:'short' }}</td>
                             <td>
                                 <div class="uploaded-file-list__actions">
-                                    <p-button icon="pi pi-download" [rounded]="true" [text]="true" severity="secondary"></p-button>
-                                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"></p-button>
+                                    <p-button icon="pi pi-download" [rounded]="true" [text]="true" severity="secondary" (click)="onDownload(file, 'translated')" pTooltip="Download Translated" tooltipPosition="top"></p-button>
+                                    
                                 </div>
                             </td>
                         </tr>

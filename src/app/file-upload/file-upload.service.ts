@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 // --- Interfaces based on your Pydantic models ---
@@ -22,7 +22,7 @@ export interface S3FileDetails {
 }
 
 export interface UploadedFilesMetadata {
-  _id?: string; // Mongo ID usually comes as _id or id
+  _id: string; // Mongo ID usually comes as _id or id
   project_id: string;
   user_id: string;
   user_name: string;
@@ -68,6 +68,38 @@ export class FileUploadService {
   getFiles(projectId: string): Observable<UploadedFilesMetadata[]> {
     return this.http.get<UploadedFilesMetadata[]>(
       `${this.apiUrl}/upload/list_files`,
+      {
+        headers: this.getHeaders(projectId),
+      }
+    );
+  }
+
+  /**
+   * Generates a signed URL for downloading the specific version of the file.
+   * Backend returns: { url: "https://s3..." }
+   */
+  downloadFile(
+    projectId: string,
+    docId: string,
+    version: 'source' | 'translated'
+  ): Observable<{ url: string }> {
+    const params = new HttpParams().set('version', version);
+
+    return this.http.get<{ url: string }>(
+      `${this.apiUrl}/upload/${projectId}/files/${docId}/download`,
+      {
+        headers: this.getHeaders(projectId),
+        params: params,
+      }
+    );
+  }
+
+  /**
+   * Deletes the document and its associated files from the backend.
+   */
+  deleteFile(projectId: string, docId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/upload/${projectId}/files/${docId}`,
       {
         headers: this.getHeaders(projectId),
       }

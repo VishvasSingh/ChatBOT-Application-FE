@@ -68,6 +68,71 @@ export class FileUploadComponent implements OnInit {
     }
   }
 
+  /**
+   * Handles downloading a file (Source or Translated).
+   * Opens the signed URL provided by the backend in a new tab.
+   */
+  onDownload(
+    file: UploadedFilesMetadata,
+    version: 'source' | 'translated'
+  ): void {
+    if (!this.projectId || !file._id) return;
+
+    this.fileUploadService
+      .downloadFile(this.projectId, file._id, version)
+      .subscribe({
+        next: (response) => {
+          if (response.url) {
+            window.open(response.url, '_blank');
+          } else {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Warning',
+              detail: 'Download URL not found.',
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Download error:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to initiate download.',
+          });
+        },
+      });
+  }
+
+  /**
+   * Handles deleting a file.
+   * Refreshes the list upon success.
+   */
+  onDelete(file: UploadedFilesMetadata): void {
+    if (!this.projectId || !file._id) return;
+
+    // Optional: You could add a confirmation dialog here using PrimeNG ConfirmationService
+
+    this.fileUploadService.deleteFile(this.projectId, file._id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'File deleted successfully.',
+        });
+        // Refresh the list to remove the deleted item from the UI
+        this.fetchFiles();
+      },
+      error: (err) => {
+        console.error('Delete error:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete file.',
+        });
+      },
+    });
+  }
+
   fetchFiles(): void {
     if (!this.projectId) return;
 
@@ -136,13 +201,7 @@ export class FileUploadComponent implements OnInit {
   // Helper to get severity for status tags
   getStatusSeverity(
     status: string
-  ):
-    | 'success'
-    | 'secondary'
-    | 'info'
-    | 'danger'
-    | 'contrast'
-    | undefined {
+  ): 'success' | 'secondary' | 'info' | 'danger' | 'contrast' | undefined {
     switch (status) {
       case FileStatus.TRANSLATED:
         return 'success';
