@@ -67,10 +67,11 @@
                             <th>Size</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-file>
-                        <tr>
+                        <tr class="uploaded-file-list__row">
                             <td>{{ file.source.filename }}</td>
                             <td>{{ file.user_name }}</td>
                             <td>{{ file.source_language | uppercase }}</td>
@@ -78,6 +79,12 @@
                             <td>{{ file.created_at | date:'short' }}</td>
                             <td>
                                 <p-tag [value]="file.status" [severity]="getStatusSeverity(file.status)"></p-tag>
+                            </td>
+                            <td>
+                                <div class="uploaded-file-list__actions">
+                                    <p-button icon="pi pi-download" [rounded]="true" [text]="true" severity="secondary"></p-button>
+                                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"></p-button>
+                                </div>
                             </td>
                         </tr>
                     </ng-template>
@@ -98,7 +105,7 @@
                             <th>Target Language</th>
                             <th>Size</th>
                             <th>Date</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-file>
@@ -109,7 +116,10 @@
                             <td>{{ (file.translated?.size || 0) / 1024 | number:'1.0-2' }} KB</td>
                             <td>{{ file.updated_at | date:'short' }}</td>
                             <td>
-                                <p-button icon="pi pi-download" [rounded]="true" [text]="true" label="Download"></p-button>
+                                <div class="uploaded-file-list__actions">
+                                    <p-button icon="pi pi-download" [rounded]="true" [text]="true" severity="secondary"></p-button>
+                                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"></p-button>
+                                </div>
                             </td>
                         </tr>
                     </ng-template>

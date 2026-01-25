@@ -51,3 +51,26 @@
   border-radius: 6px;
   background-color: var(--surface-50);
 }
+
+.uploaded-file-list {
+  &__row {
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: var(--surface-100);
+    }
+
+    /* Ensure vertical alignment for all cells in the row */
+    td {
+      padding: 0.75rem 1rem;
+      vertical-align: middle; 
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center; /* This ensures buttons align perfectly with text */
+    justify-content: flex-start; 
+  }
+}
